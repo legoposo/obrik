@@ -13,15 +13,13 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <div class="px-4 py-1">
-    <img src="{{ asset('images/logo.png') }}" class="h-12 w-auto object-contain" alt="OBRYN">
-</div>
+                
     <flux:sidebar.group heading="Obryn" class="grid">
         <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
             Dashboard
         </flux:sidebar.item>
 
-        <flux:sidebar.item icon="building-office-2" href="#">
+        <flux:sidebar.item icon="building" href="{{ route('builders.index') }}">
             Construtoras
         </flux:sidebar.item>
 
