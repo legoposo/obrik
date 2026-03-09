@@ -19,7 +19,7 @@
             Dashboard
         </flux:sidebar.item>
 
-        <flux:sidebar.item icon="building" href="{{ route('builders.index') }}">
+        <flux:sidebar.item icon="building-office" href="{{ route('builders.index') }}">
             Construtoras
         </flux:sidebar.item>
 
