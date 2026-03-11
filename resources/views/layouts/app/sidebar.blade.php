@@ -18,7 +18,7 @@
                         Dashboard
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="building-office" href="#">
+                    <flux:sidebar.item icon="building-office" :href="route('developments.index')" :current="request()->routeIs('developments.*')" wire:navigate>
                         Empreendimentos
                     </flux:sidebar.item>
 
@@ -54,7 +54,7 @@
                         Relatórios
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="cog-6-tooth" href="#">
+                    <flux:sidebar.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit')" wire:navigate>
                         Configurações
                     </flux:sidebar.item>
                 </flux:sidebar.group>

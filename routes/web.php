@@ -1,10 +1,11 @@
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\BuilderController;
+use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\FinancialEntryController;
 
 Route::view('/', 'welcome')->name('home');
@@ -21,7 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('builders', BuilderController::class)->except(['show']);
 
-    // Route::resource('developments', DevelopmentController::class)->except(['show']);
+    Route::resource('developments', DevelopmentController::class)->except(['show']);
 
     Route::resource('financial', FinancialEntryController::class);
 });

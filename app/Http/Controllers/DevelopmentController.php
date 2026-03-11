@@ -19,15 +19,12 @@ class DevelopmentController extends Controller
 
     public function create()
     {
-        $builders = Builder::orderBy('name')->get();
-
-        return view('developments.create', compact('builders'));
+        return view('developments.create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'builder_id' => ['required', 'exists:builders,id'],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:houses,apartments'],
             'city' => ['required', 'string', 'max:255'],
@@ -39,7 +36,19 @@ class DevelopmentController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        Development::create($validated);
+        $builder = Builder::query()->first();
+
+        if (! $builder) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['name' => 'Cadastre uma construtora antes de criar um empreendimento.']);
+        }
+
+        Development::create([
+            ...$validated,
+            'builder_id' => $builder->id,
+        ]);
 
         return redirect()
             ->route('developments.index')
@@ -48,15 +57,12 @@ class DevelopmentController extends Controller
 
     public function edit(Development $development)
     {
-        $builders = Builder::orderBy('name')->get();
-
-        return view('developments.edit', compact('development', 'builders'));
+        return view('developments.edit', compact('development'));
     }
 
     public function update(Request $request, Development $development)
     {
         $validated = $request->validate([
-            'builder_id' => ['required', 'exists:builders,id'],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:houses,apartments'],
             'city' => ['required', 'string', 'max:255'],
