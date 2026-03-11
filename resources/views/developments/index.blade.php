@@ -17,6 +17,38 @@
             </div>
         @endif
 
+        <div class="panel-card mb-6">
+            <div class="panel-card__body">
+                <form action="{{ route('developments.index') }}" method="GET" class="space-y-4">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-end">
+                        <div class="flex-1">
+                            <label for="search" class="field-label">Buscar empreendimento</label>
+                            <input
+                                id="search"
+                                type="text"
+                                name="search"
+                                value="{{ $search }}"
+                                class="field-input"
+                                placeholder="Busque por nome, cidade, endereço, casa, apartamento, construtora ou status"
+                            >
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="primary-button">Buscar</button>
+
+                            @if ($search !== '')
+                                <a href="{{ route('developments.index') }}" class="ghost-button" wire:navigate>Limpar</a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                        Pesquise por termos como <span class="font-medium text-zinc-700 dark:text-zinc-200">Bauru</span>, <span class="font-medium text-zinc-700 dark:text-zinc-200">Aurora</span>, <span class="font-medium text-zinc-700 dark:text-zinc-200">casa</span>, <span class="font-medium text-zinc-700 dark:text-zinc-200">apartamento</span> ou pelo status do empreendimento.
+                    </p>
+                </form>
+            </div>
+        </div>
+
         <div class="table-card">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -36,6 +68,11 @@
                                     <a href="{{ route('developments.show', $development) }}" class="font-semibold hover:text-blue-600" wire:navigate>
                                         {{ $development->name }}
                                     </a>
+                                    @if ($development->builder)
+                                        <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                                            {{ $development->builder->name }}
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-300">
                                     {{ $development->type === 'houses' ? 'Casas' : 'Apartamentos' }}
@@ -98,7 +135,7 @@
                         @empty
                             <tr>
                                 <td colspan="5" class="px-6 py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-                                    Nenhum empreendimento cadastrado.
+                                    {{ $search !== '' ? 'Nenhum empreendimento encontrado para a busca informada.' : 'Nenhum empreendimento cadastrado.' }}
                                 </td>
                             </tr>
                         @endforelse

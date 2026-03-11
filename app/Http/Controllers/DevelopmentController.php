@@ -8,13 +8,44 @@ use Illuminate\Http\Request;
 
 class DevelopmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $developments = Development::with('builder')
-            ->latest()
-            ->paginate(10);
+        $search = trim((string) $request->string('search'));
+        $matchedTypes = $this->matchedDevelopmentTypes($search);
+        $matchedStatuses = $this->matchedDevelopmentStatuses($search);
 
-        return view('developments.index', compact('developments'));
+        $developments = Development::with('builder')
+            ->when($search !== '', function ($query) use ($search, $matchedTypes, $matchedStatuses) {
+                $query->where(function ($innerQuery) use ($search, $matchedTypes, $matchedStatuses) {
+                    $like = '%'.$search.'%';
+
+                    $innerQuery
+                        ->where('name', 'like', $like)
+                        ->orWhere('city', 'like', $like)
+                        ->orWhere('state', 'like', $like)
+                        ->orWhere('address', 'like', $like)
+                        ->orWhere('description', 'like', $like)
+                        ->orWhereHas('builder', function ($builderQuery) use ($like) {
+                            $builderQuery
+                                ->where('name', 'like', $like)
+                                ->orWhere('city', 'like', $like)
+                                ->orWhere('responsible', 'like', $like);
+                        });
+
+                    if ($matchedTypes !== []) {
+                        $innerQuery->orWhereIn('type', $matchedTypes);
+                    }
+
+                    if ($matchedStatuses !== []) {
+                        $innerQuery->orWhereIn('status', $matchedStatuses);
+                    }
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('developments.index', compact('developments', 'search'));
     }
 
     public function create()
@@ -107,5 +138,45 @@ class DevelopmentController extends Controller
         return redirect()
             ->route('developments.index')
             ->with('success', 'Empreendimento excluido com sucesso.');
+    }
+
+    protected function matchedDevelopmentTypes(string $search): array
+    {
+        $normalized = mb_strtolower($search);
+        $matchedTypes = [];
+
+        if (str_contains($normalized, 'casa')) {
+            $matchedTypes[] = 'houses';
+        }
+
+        if (str_contains($normalized, 'apart')) {
+            $matchedTypes[] = 'apartments';
+        }
+
+        return array_values(array_unique($matchedTypes));
+    }
+
+    protected function matchedDevelopmentStatuses(string $search): array
+    {
+        $normalized = mb_strtolower($search);
+        $statusMap = [
+            'planejamento' => 'planning',
+            'andamento' => 'in_progress',
+            'em andamento' => 'in_progress',
+            'pausado' => 'paused',
+            'concluido' => 'completed',
+            'concluído' => 'completed',
+            'cancelado' => 'canceled',
+        ];
+
+        $matches = [];
+
+        foreach ($statusMap as $term => $status) {
+            if (str_contains($normalized, $term)) {
+                $matches[] = $status;
+            }
+        }
+
+        return array_values(array_unique($matches));
     }
 }
