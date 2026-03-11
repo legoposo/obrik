@@ -28,7 +28,7 @@
     @foreach([
         ['label' => 'Clientes', 'val' => $clientsCount, 'color' => 'border-blue-500', 'bg' => 'bg-blue-50/50'],
         ['label' => 'Contratos Ativos', 'val' => $activeContractsCount, 'color' => 'border-emerald-500', 'bg' => 'bg-emerald-50/50'],
-        ['label' => 'Unidades Disp.', 'val' => $availableUnitsCount, 'color' => 'border-orange-500', 'bg' => 'bg-orange-50/50'],
+        ['label' => 'Unidades Disponíveis', 'val' => $availableUnitsCount, 'color' => 'border-orange-500', 'bg' => 'bg-orange-50/50'],
         ['label' => 'Empreendimentos', 'val' => $developmentsCount, 'color' => 'border-purple-500', 'bg' => 'bg-purple-50/50'],
     ] as $item)
     <div class="group relative overflow-hidden rounded-2xl border-t-4 {{ $item['color'] }} bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-zinc-900">
