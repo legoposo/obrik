@@ -32,4 +32,9 @@ class Unit extends Model
     {
         return $this->belongsTo(Development::class);
     }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
 }

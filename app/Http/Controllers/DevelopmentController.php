@@ -55,6 +55,25 @@ class DevelopmentController extends Controller
             ->with('success', 'Empreendimento cadastrado com sucesso.');
     }
 
+    public function show(Development $development)
+    {
+        $development->load([
+            'builder',
+            'units' => fn ($query) => $query->orderByRaw('LENGTH(identifier)')->orderBy('identifier'),
+        ]);
+
+        $units = $development->units;
+
+        $unitStats = [
+            'available' => $units->where('status', 'available')->count(),
+            'reserved' => $units->where('status', 'reserved')->count(),
+            'sold' => $units->where('status', 'sold')->count(),
+            'blocked' => $units->where('status', 'blocked')->count(),
+        ];
+
+        return view('developments.show', compact('development', 'units', 'unitStats'));
+    }
+
     public function edit(Development $development)
     {
         return view('developments.edit', compact('development'));
@@ -87,6 +106,6 @@ class DevelopmentController extends Controller
 
         return redirect()
             ->route('developments.index')
-            ->with('success', 'Empreendimento excluído com sucesso.');
+            ->with('success', 'Empreendimento excluido com sucesso.');
     }
 }

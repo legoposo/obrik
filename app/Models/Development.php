@@ -36,4 +36,9 @@ class Development extends Model
     {
         return $this->hasMany(Unit::class);
     }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
 }

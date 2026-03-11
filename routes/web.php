@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\BuilderController;
@@ -24,8 +25,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('builders', BuilderController::class)->except(['show']);
 
     Route::resource('developments', DevelopmentController::class)->except(['show']);
+    Route::get('developments/{development}', [DevelopmentController::class, 'show'])->name('developments.show');
 
     Route::resource('units', UnitController::class)->except(['show']);
+
+    Route::get('contracts/{contract}/print', [ContractController::class, 'print'])->name('contracts.print');
+    Route::resource('contracts', ContractController::class)->except(['show']);
 
     Route::resource('financial', FinancialEntryController::class);
 });

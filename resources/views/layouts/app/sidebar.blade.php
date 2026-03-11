@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
@@ -54,13 +54,15 @@
 
                     <flux:sidebar.item
                         icon="document-text"
-                        href="#"
+                        :href="route('contracts.index')"
+                        :current="request()->routeIs('contracts.*')"
+                        wire:navigate
                     >
                         Contratos
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
-                <flux:sidebar.group heading="Opera&ccedil;&atilde;o" class="grid">
+                <flux:sidebar.group heading="Operação" class="grid">
                     <flux:sidebar.item
                         icon="home-modern"
                         :href="route('works.index')"
@@ -101,7 +103,7 @@
                         icon="chart-bar"
                         href="#"
                     >
-                        Relat&oacute;rios
+                        Relatórios
                     </flux:sidebar.item>
 
                     <flux:sidebar.item
@@ -110,7 +112,7 @@
                         :current="request()->routeIs('profile.edit')"
                         wire:navigate
                     >
-                        Configura&ccedil;&otilde;es
+                        Configurações
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
