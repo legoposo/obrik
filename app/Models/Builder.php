@@ -16,4 +16,8 @@ class Builder extends Model
         'address',
         'responsible',
     ];
+    public function developments()
+    {
+        return $this->hasMany(Development::class);
+    } 
 }

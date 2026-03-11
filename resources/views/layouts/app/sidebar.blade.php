@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
@@ -13,75 +13,54 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                
-    <flux:sidebar.group heading="Obryn" class="grid">
-        <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-            Dashboard
-        </flux:sidebar.item>
+                <flux:sidebar.group heading="Obryn" class="grid">
+                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        Dashboard
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="building-office" href="{{ route('builders.index') }}">
-            Construtoras
-        </flux:sidebar.item>
+                    <flux:sidebar.item icon="building-office" href="#">
+                        Empreendimentos
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="building-office" href="#">
-            Empreendimentos
-        </flux:sidebar.item>
+                    <flux:sidebar.item icon="squares-2x2" href="#">
+                        Unidades
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="squares-2x2" href="#">
-            Unidades
-        </flux:sidebar.item>
+                    <flux:sidebar.item icon="users" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>
+                        Clientes
+                    </flux:sidebar.item>
 
-        
+                    <flux:sidebar.item icon="document-text" href="#">
+                        Contratos
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item 
-            icon="users" 
-            href="{{ route('clients.index') }}"
-            :active="request()->routeIs('clients.*')"
->
-    Clientes
-</flux:sidebar.item>
+                    <flux:sidebar.item icon="banknotes" :href="route('financial.index')" :current="request()->routeIs('financial.*')" wire:navigate>
+                        Financeiro
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="document-text" href="#">
-            Contratos
-        </flux:sidebar.item>
+                    <flux:sidebar.item icon="home-modern" :href="route('works.index')" :current="request()->routeIs('works.*')" wire:navigate>
+                        Obras
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="banknotes" href="#">
-            Financeiro
-        </flux:sidebar.item>
+                    <flux:sidebar.item icon="folder" href="#">
+                        Documentos
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="home" href="{{ route('works.index') }}">
-    Obras
-</flux:sidebar.item>
+                    <flux:sidebar.item icon="chat-bubble-left-right" href="#">
+                        CRM
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="folder" href="#">
-            Documentos
-        </flux:sidebar.item>
+                    <flux:sidebar.item icon="chart-bar" href="#">
+                        Relatórios
+                    </flux:sidebar.item>
 
-        <flux:sidebar.item icon="chat-bubble-left-right" href="#">
-            CRM
-        </flux:sidebar.item>
-
-        <flux:sidebar.item icon="chart-bar" href="#">
-            Relatórios
-        </flux:sidebar.item>
-
-        <flux:sidebar.item icon="cog-6-tooth" href="#">
-            Configurações
-        </flux:sidebar.item>
-    </flux:sidebar.group>
-</flux:sidebar.nav>
+                    <flux:sidebar.item icon="cog-6-tooth" href="#">
+                        Configurações
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+            </flux:sidebar.nav>
 
             <flux:spacer />
-
-            {{-- <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav> --}}
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>

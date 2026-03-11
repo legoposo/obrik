@@ -37,7 +37,6 @@
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -52,7 +51,7 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
@@ -61,6 +60,96 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+@layer components {
+    .page-header {
+        @apply mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between;
+    }
+
+    .page-title {
+        @apply text-2xl font-bold tracking-tight text-zinc-800 dark:text-white;
+    }
+
+    .page-subtitle {
+        @apply mt-1 max-w-2xl text-sm leading-6 text-zinc-500 dark:text-zinc-400;
+    }
+
+    .panel-card {
+        @apply overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-sm shadow-zinc-200/50 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none;
+    }
+
+    .panel-card__body {
+        @apply p-6 md:p-8;
+    }
+
+    .panel-card__intro {
+        @apply mb-8 rounded-2xl bg-linear-to-r from-slate-50 via-white to-blue-50/80 p-5 ring-1 ring-zinc-200/70 dark:from-zinc-900 dark:via-zinc-900 dark:to-blue-950/30 dark:ring-zinc-800;
+    }
+
+    .panel-card__eyebrow {
+        @apply text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-300;
+    }
+
+    .panel-card__title {
+        @apply mt-2 text-lg font-semibold text-zinc-900 dark:text-white;
+    }
+
+    .panel-card__text {
+        @apply mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400;
+    }
+
+    .form-grid {
+        @apply grid grid-cols-1 gap-6 md:grid-cols-2;
+    }
+
+    .field-group {
+        @apply space-y-2;
+    }
+
+    .field-label {
+        @apply block text-sm font-semibold text-zinc-700 dark:text-zinc-200;
+    }
+
+    .field-input {
+        @apply w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-800 shadow-sm shadow-zinc-200/40 transition duration-200 placeholder:text-zinc-400 hover:border-zinc-300 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:shadow-none dark:hover:border-zinc-600;
+    }
+
+    .field-error {
+        @apply text-sm text-red-600 dark:text-red-400;
+    }
+
+    .form-actions {
+        @apply mt-6 flex flex-col-reverse gap-3 border-t border-zinc-200 pt-6 md:flex-row md:justify-end dark:border-zinc-800;
+    }
+
+    .ghost-button {
+        @apply inline-flex items-center justify-center rounded-2xl border border-zinc-200 px-4 py-3 text-sm font-semibold text-zinc-700 transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:bg-zinc-800;
+    }
+
+    .primary-button {
+        @apply inline-flex items-center justify-center rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-blue-600/30 transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md hover:shadow-blue-600/30;
+    }
+
+    .success-alert {
+        @apply mb-4 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-900 dark:bg-green-950/50 dark:text-green-300;
+    }
+
+    .table-card {
+        @apply overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-sm shadow-zinc-200/50 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none;
+    }
+
+    .action-icon {
+        @apply inline-flex h-10 w-10 items-center justify-center rounded-2xl border text-sm transition duration-200 hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-4;
+    }
+
+    .action-icon svg {
+        @apply h-[18px] w-[18px];
+    }
+
+    .action-icon--edit {
+        @apply border-blue-200 bg-blue-50 text-blue-600 hover:border-blue-300 hover:bg-blue-100 hover:text-blue-700 focus:ring-blue-500/20 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/40;
+    }
+
+    .action-icon--delete {
+        @apply border-red-200 bg-red-50 text-red-600 hover:border-red-300 hover:bg-red-100 hover:text-red-700 focus:ring-red-500/20 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/40;
+    }
+}

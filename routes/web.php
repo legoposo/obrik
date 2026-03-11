@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\BuilderController;
+use App\Http\Controllers\FinancialEntryController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -19,6 +20,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('works', WorkController::class)->except(['show']);
 
     Route::resource('builders', BuilderController::class)->except(['show']);
+
+    // Route::resource('developments', DevelopmentController::class)->except(['show']);
+
+    Route::resource('financial', FinancialEntryController::class);
 });
 
 require __DIR__ . '/settings.php';
