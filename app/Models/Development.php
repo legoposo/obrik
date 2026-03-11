@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Development extends Model
 {
@@ -30,5 +30,10 @@ class Development extends Model
     public function builder()
     {
         return $this->belongsTo(Builder::class);
+    }
+
+    public function units()
+    {
+        return $this->hasMany(Unit::class);
     }
 }

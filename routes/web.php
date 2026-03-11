@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\FinancialEntryController;
+use App\Http\Controllers\UnitController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -23,6 +24,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('builders', BuilderController::class)->except(['show']);
 
     Route::resource('developments', DevelopmentController::class)->except(['show']);
+
+    Route::resource('units', UnitController::class)->except(['show']);
 
     Route::resource('financial', FinancialEntryController::class);
 });

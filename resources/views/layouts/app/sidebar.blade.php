@@ -3,10 +3,10 @@
     <head>
         @include('partials.head')
     </head>
-    
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+
+    <body class="min-h-screen bg-white lg:h-screen lg:overflow-hidden dark:bg-zinc-800">
+
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 lg:h-screen lg:overflow-y-auto">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
@@ -14,48 +14,103 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group heading="Obryn" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:sidebar.item
+                        icon="home"
+                        :href="route('dashboard')"
+                        :current="request()->routeIs('dashboard')"
+                        wire:navigate
+                    >
                         Dashboard
                     </flux:sidebar.item>
+                </flux:sidebar.group>
 
-                    <flux:sidebar.item icon="building-office" :href="route('developments.index')" :current="request()->routeIs('developments.*')" wire:navigate>
+                <flux:sidebar.group heading="Gestão Imobiliária" class="grid">
+                    <flux:sidebar.item
+                        icon="building-office"
+                        :href="route('developments.index')"
+                        :current="request()->routeIs('developments.*')"
+                        wire:navigate
+                    >
                         Empreendimentos
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="squares-2x2" href="#">
+                    <flux:sidebar.item
+                        icon="squares-2x2"
+                        :href="route('units.index')"
+                        :current="request()->routeIs('units.*')"
+                        wire:navigate
+                    >
                         Unidades
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="users" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>
+                    <flux:sidebar.item
+                        icon="users"
+                        :href="route('clients.index')"
+                        :current="request()->routeIs('clients.*')"
+                        wire:navigate
+                    >
                         Clientes
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="document-text" href="#">
+                    <flux:sidebar.item
+                        icon="document-text"
+                        href="#"
+                    >
                         Contratos
                     </flux:sidebar.item>
+                </flux:sidebar.group>
 
-                    <flux:sidebar.item icon="banknotes" :href="route('financial.index')" :current="request()->routeIs('financial.*')" wire:navigate>
-                        Financeiro
-                    </flux:sidebar.item>
-
-                    <flux:sidebar.item icon="home-modern" :href="route('works.index')" :current="request()->routeIs('works.*')" wire:navigate>
+                <flux:sidebar.group heading="Opera&ccedil;&atilde;o" class="grid">
+                    <flux:sidebar.item
+                        icon="home-modern"
+                        :href="route('works.index')"
+                        :current="request()->routeIs('works.*')"
+                        wire:navigate
+                    >
                         Obras
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="folder" href="#">
+                    <flux:sidebar.item
+                        icon="banknotes"
+                        :href="route('financial.index')"
+                        :current="request()->routeIs('financial.*')"
+                        wire:navigate
+                    >
+                        Financeiro
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group heading="Comercial" class="grid">
+                    <flux:sidebar.item
+                        icon="chat-bubble-left-right"
+                        href="#"
+                    >
+                        CRM
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group heading="Apoio" class="grid">
+                    <flux:sidebar.item
+                        icon="folder"
+                        href="#"
+                    >
                         Documentos
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="chat-bubble-left-right" href="#">
-                        CRM
+                    <flux:sidebar.item
+                        icon="chart-bar"
+                        href="#"
+                    >
+                        Relat&oacute;rios
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="chart-bar" href="#">
-                        Relatórios
-                    </flux:sidebar.item>
-
-                    <flux:sidebar.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit')" wire:navigate>
-                        Configurações
+                    <flux:sidebar.item
+                        icon="cog-6-tooth"
+                        :href="route('profile.edit')"
+                        :current="request()->routeIs('profile.edit')"
+                        wire:navigate
+                    >
+                        Configura&ccedil;&otilde;es
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
@@ -65,7 +120,6 @@
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>
 
-        <!-- Mobile User Menu -->
         <flux:header class="lg:hidden">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
