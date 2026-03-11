@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Development;
 use App\Models\Unit;
+use App\Support\ContractPrintData;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ContractController extends Controller
@@ -78,9 +79,10 @@ class ContractController extends Controller
 
     public function print(Contract $contract)
     {
-        $contract->load(['client', 'development', 'unit']);
+        $contract->load(['client', 'development.builder', 'unit']);
+        $document = ContractPrintData::from($contract);
 
-        $pdf = Pdf::loadView('contracts.pdf', compact('contract'))
+        $pdf = Pdf::loadView('contracts.pdf', compact('contract', 'document'))
             ->setPaper('a4', 'portrait')
             ->setOption(['isRemoteEnabled' => false]);
 
