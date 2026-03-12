@@ -5,7 +5,6 @@
     </head>
 
     <body class="min-h-screen bg-white lg:h-screen lg:overflow-hidden dark:bg-zinc-800">
-
         <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 lg:h-screen lg:overflow-y-auto">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
@@ -24,7 +23,7 @@
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
-                <flux:sidebar.group heading="Gestão Imobiliária" class="grid">
+                <flux:sidebar.group heading="Gestao Imobiliaria" class="grid">
                     <flux:sidebar.item
                         icon="building-office"
                         :href="route('developments.index')"
@@ -58,20 +57,62 @@
                         :current="request()->routeIs('contracts.*')"
                         wire:navigate
                     >
-                        Contratos
+                        Reservas / Contratos
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
-                <flux:sidebar.group heading="Operação" class="grid">
+                <flux:sidebar.group heading="Obra" class="grid">
                     <flux:sidebar.item
-                        icon="home-modern"
-                        :href="route('works.index')"
-                        :current="request()->routeIs('works.*')"
+                        icon="chart-bar-square"
+                        :href="route('construction.stages')"
+                        :current="request()->routeIs('construction.stages') || request()->routeIs('developments.stages.*')"
                         wire:navigate
                     >
-                        Obras
+                        Andamento da obra
                     </flux:sidebar.item>
 
+                    <flux:sidebar.item
+                        icon="megaphone"
+                        :href="route('construction.communications')"
+                        :current="request()->routeIs('construction.communications') || request()->routeIs('developments.communications.*')"
+                        wire:navigate
+                    >
+                        Comunicados
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item
+                        icon="photo"
+                        :href="route('construction.photos')"
+                        :current="request()->routeIs('construction.photos') || request()->routeIs('developments.photos.*')"
+                        wire:navigate
+                    >
+                        Fotos da obra
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group heading="Relacionamento" class="grid">
+                    <flux:sidebar.item
+                        icon="chat-bubble-left-right"
+                        :href="route('client-portal.index')"
+                        :current="request()->routeIs('client-portal.*')"
+                        wire:navigate
+                    >
+                        Portal do cliente
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group heading="Analises" class="grid">
+                    <flux:sidebar.item
+                        icon="presentation-chart-line"
+                        :href="route('reports.index')"
+                        :current="request()->routeIs('reports.*')"
+                        wire:navigate
+                    >
+                        Relatorios
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group heading="Apoio" class="grid">
                     <flux:sidebar.item
                         icon="banknotes"
                         :href="route('financial.index')"
@@ -80,31 +121,6 @@
                     >
                         Financeiro
                     </flux:sidebar.item>
-                </flux:sidebar.group>
-
-                <flux:sidebar.group heading="Comercial" class="grid">
-                    <flux:sidebar.item
-                        icon="chat-bubble-left-right"
-                        href="#"
-                    >
-                        CRM
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-
-                <flux:sidebar.group heading="Apoio" class="grid">
-                    <flux:sidebar.item
-                        icon="folder"
-                        href="#"
-                    >
-                        Documentos
-                    </flux:sidebar.item>
-
-                    <flux:sidebar.item
-                        icon="chart-bar"
-                        href="#"
-                    >
-                        Relatórios
-                    </flux:sidebar.item>
 
                     <flux:sidebar.item
                         icon="cog-6-tooth"
@@ -112,7 +128,7 @@
                         :current="request()->routeIs('profile.edit')"
                         wire:navigate
                     >
-                        Configurações
+                        Configuracoes
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>

@@ -15,68 +15,122 @@
     </div>
 
     <div class="field-group">
-        <label for="identifier" class="field-label">Identificação da unidade</label>
-        <input id="identifier" type="text" name="identifier" value="{{ old('identifier', $unit->identifier ?? '') }}" class="field-input" required>
-        @error('identifier')
+        <label for="block_or_tower" class="field-label">Bloco ou torre</label>
+        <input
+            id="block_or_tower"
+            type="text"
+            name="block_or_tower"
+            value="{{ old('block_or_tower', $unit->block_or_tower ?? $unit->block ?? '') }}"
+            class="field-input"
+            placeholder="Ex.: Torre A"
+        >
+        @error('block_or_tower')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="type" class="field-label">Tipo</label>
-        <input id="type" type="text" name="type" value="{{ old('type', $unit->type ?? '') }}" class="field-input" required>
+        <label for="unit_number" class="field-label">Numero da unidade</label>
+        <input
+            id="unit_number"
+            type="text"
+            name="unit_number"
+            value="{{ old('unit_number', $unit->unit_number ?? $unit->identifier ?? '') }}"
+            class="field-input"
+            placeholder="Ex.: 1203"
+            required
+        >
+        @error('unit_number')
+            <p class="field-error">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="field-group">
+        <label for="type" class="field-label">Tipologia</label>
+        <input
+            id="type"
+            type="text"
+            name="type"
+            value="{{ old('type', $unit->type ?? '') }}"
+            class="field-input"
+            placeholder="Ex.: Apartamento 3 dormitorios"
+            required
+        >
         @error('type')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="block" class="field-label">Bloco/Torre</label>
-        <input id="block" type="text" name="block" value="{{ old('block', $unit->block ?? '') }}" class="field-input">
-        @error('block')
+        <label for="area" class="field-label">Area (m2)</label>
+        <input
+            id="area"
+            type="number"
+            step="0.01"
+            min="0"
+            name="area"
+            value="{{ old('area', $unit->area ?? $unit->private_area ?? '') }}"
+            class="field-input"
+        >
+        @error('area')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="floor" class="field-label">Andar</label>
-        <input id="floor" type="text" name="floor" value="{{ old('floor', $unit->floor ?? '') }}" class="field-input">
-        @error('floor')
+        <label for="bedrooms" class="field-label">Dormitorios</label>
+        <input
+            id="bedrooms"
+            type="number"
+            min="0"
+            name="bedrooms"
+            value="{{ old('bedrooms', $unit->bedrooms ?? '') }}"
+            class="field-input"
+        >
+        @error('bedrooms')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="private_area" class="field-label">Área privativa (m²)</label>
-        <input id="private_area" type="number" step="0.01" min="0" name="private_area" value="{{ old('private_area', $unit->private_area ?? '') }}" class="field-input">
-        @error('private_area')
+        <label for="parking_spaces" class="field-label">Vagas</label>
+        <input
+            id="parking_spaces"
+            type="number"
+            min="0"
+            name="parking_spaces"
+            value="{{ old('parking_spaces', $unit->parking_spaces ?? '') }}"
+            class="field-input"
+        >
+        @error('parking_spaces')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="total_area" class="field-label">Área total (m²)</label>
-        <input id="total_area" type="number" step="0.01" min="0" name="total_area" value="{{ old('total_area', $unit->total_area ?? '') }}" class="field-input">
-        @error('total_area')
-            <p class="field-error">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <div class="field-group">
-        <label for="price" class="field-label">Valor</label>
-        <input id="price" type="number" step="0.01" min="0" name="price" value="{{ old('price', $unit->price ?? '') }}" class="field-input">
+        <label for="price" class="field-label">Preco</label>
+        <input
+            id="price"
+            type="number"
+            step="0.01"
+            min="0"
+            name="price"
+            value="{{ old('price', $unit->price ?? '') }}"
+            class="field-input"
+            placeholder="0,00"
+        >
         @error('price')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="status" class="field-label">Status</label>
+        <label for="status" class="field-label">Status comercial</label>
         <select id="status" name="status" class="field-input" required>
-            <option value="available" @selected(old('status', $unit->status ?? 'available') === 'available')>Disponível</option>
-            <option value="reserved" @selected(old('status', $unit->status ?? '') === 'reserved')>Reservado</option>
-            <option value="sold" @selected(old('status', $unit->status ?? '') === 'sold')>Vendido</option>
-            <option value="blocked" @selected(old('status', $unit->status ?? '') === 'blocked')>Bloqueado</option>
+            <option value="disponivel" @selected(old('status', $unit->status ?? 'disponivel') === 'disponivel')>Disponivel</option>
+            <option value="reservada" @selected(old('status', $unit->status ?? '') === 'reservada')>Reservada</option>
+            <option value="vendida" @selected(old('status', $unit->status ?? '') === 'vendida')>Vendida</option>
+            <option value="bloqueada" @selected(old('status', $unit->status ?? '') === 'bloqueada')>Bloqueada</option>
         </select>
         @error('status')
             <p class="field-error">{{ $message }}</p>
@@ -84,8 +138,8 @@
     </div>
 
     <div class="field-group md:col-span-2">
-        <label for="notes" class="field-label">Observações</label>
-        <textarea id="notes" name="notes" rows="4" class="field-input">{{ old('notes', $unit->notes ?? '') }}</textarea>
+        <label for="notes" class="field-label">Observacoes</label>
+        <textarea id="notes" name="notes" rows="5" class="field-input" placeholder="Registre detalhes de planta, acabamento, vista, restricoes ou observacoes comerciais.">{{ old('notes', $unit->notes ?? '') }}</textarea>
         @error('notes')
             <p class="field-error">{{ $message }}</p>
         @enderror

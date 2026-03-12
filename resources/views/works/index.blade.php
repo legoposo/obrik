@@ -3,13 +3,13 @@
         <div class="page-header">
             <div>
                 <h1 class="page-title">Obras</h1>
-                <p class="page-subtitle">Gerencie as obras cadastradas no sistema.</p>
+                <p class="page-subtitle">Gerencie as obras cadastradas no sistema e acompanhe o cronograma de cada uma.</p>
             </div>
 
             <a href="{{ route('works.create') }}" class="primary-button">Nova Obra</a>
         </div>
 
-        @if(session('success'))
+        @if (session('success'))
             <div class="success-alert">{{ session('success') }}</div>
         @endif
 
@@ -27,7 +27,7 @@
                 </thead>
 
                 <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
-                    @forelse($works as $work)
+                    @forelse ($works as $work)
                         @php
                             $statusMap = [
                                 'planning' => ['label' => 'Planejamento', 'class' => 'bg-zinc-100 text-zinc-700'],
@@ -38,18 +38,33 @@
                             ];
 
                             $status = $statusMap[$work->status] ?? ['label' => $work->status, 'class' => 'bg-zinc-100 text-zinc-700'];
+                            $progressPercentage = $work->stages_count > 0 ? (int) round(($work->completed_stages_count / $work->stages_count) * 100) : 0;
                         @endphp
 
-                        <tr>
-                            <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $work->name }}</td>
+                        <tr class="report-table-row">
+                            <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">
+                                <div class="font-semibold text-zinc-800 dark:text-zinc-100">{{ $work->name }}</div>
+                                <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                                    {{ number_format($work->stages_count, 0, ',', '.') }} etapas cadastradas
+                                    @if ($work->stages_count > 0)
+                                        | {{ $progressPercentage }}% concluidas
+                                    @endif
+                                </div>
+                            </td>
                             <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $work->client->name ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">
                                 <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium {{ $status['class'] }}">{{ $status['label'] }}</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $work->start_date ? \Carbon\Carbon::parse($work->start_date)->format('d/m/Y') : '-' }}</td>
-                            <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $work->expected_end_date ? \Carbon\Carbon::parse($work->expected_end_date)->format('d/m/Y') : '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $work->start_date?->format('d/m/Y') ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $work->expected_end_date?->format('d/m/Y') ?? '-' }}</td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('works.stages.index', $work) }}" class="action-icon action-icon--timeline" title="Cronograma" aria-label="Abrir cronograma da obra">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M7.5 3.75v6m9-6v6M6.75 12.75h3.75v3.75H6.75v-3.75Zm6.75 0h3.75v3.75H13.5v-3.75Z" />
+                                        </svg>
+                                    </a>
+
                                     <a href="{{ route('works.edit', $work->id) }}" class="action-icon action-icon--edit" title="Editar" aria-label="Editar obra">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487a2.1 2.1 0 1 1 2.97 2.97L8.25 19.04 4 20l.96-4.25 11.902-11.263Z" />

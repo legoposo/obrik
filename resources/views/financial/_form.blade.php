@@ -42,6 +42,21 @@
     </div>
 
     <div class="field-group">
+        <label for="category" class="field-label">Categoria</label>
+        <input
+            type="text"
+            name="category"
+            id="category"
+            value="{{ old('category', $financial->category ?? '') }}"
+            class="field-input"
+            placeholder="Ex.: Material, Mao de obra, Recebimento"
+        >
+        @error('category')
+            <p class="field-error">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="field-group">
         <label for="amount" class="field-label">Valor</label>
         <input type="number" step="0.01" name="amount" id="amount" value="{{ old('amount', $financial->amount ?? '') }}" class="field-input" required>
         @error('amount')

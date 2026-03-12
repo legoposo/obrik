@@ -20,6 +20,7 @@
                         <tr>
                             <th class="px-6 py-4 font-semibold">Obra</th>
                             <th class="px-6 py-4 font-semibold">Cliente</th>
+                            <th class="px-6 py-4 font-semibold">Categoria</th>
                             <th class="px-6 py-4 font-semibold">Descricao</th>
                             <th class="px-6 py-4 font-semibold">Tipo</th>
                             <th class="px-6 py-4 font-semibold">Valor</th>
@@ -33,6 +34,7 @@
                             <tr class="text-zinc-700 dark:text-zinc-200">
                                 <td class="px-6 py-4">{{ $entry->work->name ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $entry->client->name ?? '-' }}</td>
+                                <td class="px-6 py-4">{{ $entry->category ?: '-' }}</td>
                                 <td class="px-6 py-4">{{ $entry->description }}</td>
                                 <td class="px-6 py-4">{{ $entry->type === 'income' ? 'Receita' : 'Despesa' }}</td>
                                 <td class="px-6 py-4">R$ {{ number_format($entry->amount, 2, ',', '.') }}</td>
@@ -72,7 +74,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-6 py-8 text-center text-zinc-500 dark:text-zinc-400">Nenhum lancamento financeiro cadastrado.</td>
+                                <td colspan="9" class="px-6 py-8 text-center text-zinc-500 dark:text-zinc-400">Nenhum lancamento financeiro cadastrado.</td>
                             </tr>
                         @endforelse
                     </tbody>

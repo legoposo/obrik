@@ -1,32 +1,44 @@
-﻿<div class="form-grid">
+<div class="form-grid">
     <div class="field-group md:col-span-2">
-        <label for="name" class="field-label">Nome</label>
-        <input id="name" type="text" name="name" value="{{ old('name', $development->name ?? '') }}" class="field-input">
+        <label for="name" class="field-label">Nome do empreendimento</label>
+        <input
+            id="name"
+            type="text"
+            name="name"
+            value="{{ old('name', $development->name ?? '') }}"
+            class="field-input"
+            placeholder="Ex.: Residencial Aurora"
+            required
+        >
         @error('name')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="field-group">
-        <label for="type" class="field-label">Tipo</label>
-        <select id="type" name="type" class="field-input">
-            <option value="">Selecione o tipo</option>
-            <option value="houses" @selected(old('type', $development->type ?? '') === 'houses')>Casas</option>
-            <option value="apartments" @selected(old('type', $development->type ?? '') === 'apartments')>Apartamentos</option>
-        </select>
-        @error('type')
+    <div class="field-group md:col-span-2">
+        <label for="location" class="field-label">Localizacao</label>
+        <input
+            id="location"
+            type="text"
+            name="location"
+            value="{{ old('location', $development->location ?? $development->address ?? '') }}"
+            class="field-input"
+            placeholder="Cidade, bairro ou endereco principal"
+        >
+        @error('location')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
         <label for="status" class="field-label">Status</label>
-        <select id="status" name="status" class="field-input">
-            <option value="planning" @selected(old('status', $development->status ?? '') === 'planning')>Planejamento</option>
-            <option value="in_progress" @selected(old('status', $development->status ?? '') === 'in_progress')>Em andamento</option>
-            <option value="paused" @selected(old('status', $development->status ?? '') === 'paused')>Pausado</option>
-            <option value="completed" @selected(old('status', $development->status ?? '') === 'completed')>Concluído</option>
-            <option value="canceled" @selected(old('status', $development->status ?? '') === 'canceled')>Cancelado</option>
+        <select id="status" name="status" class="field-input" required>
+            <option value="planejamento" @selected(old('status', $development->status ?? 'planejamento') === 'planejamento')>Planejamento</option>
+            <option value="lancamento" @selected(old('status', $development->status ?? '') === 'lancamento')>Lancamento</option>
+            <option value="em_obras" @selected(old('status', $development->status ?? '') === 'em_obras')>Em obras</option>
+            <option value="finalizado" @selected(old('status', $development->status ?? '') === 'finalizado')>Finalizado</option>
+            <option value="entregue" @selected(old('status', $development->status ?? '') === 'entregue')>Entregue</option>
+            <option value="cancelado" @selected(old('status', $development->status ?? '') === 'cancelado')>Cancelado</option>
         </select>
         @error('status')
             <p class="field-error">{{ $message }}</p>
@@ -34,49 +46,45 @@
     </div>
 
     <div class="field-group">
-        <label for="city" class="field-label">Cidade</label>
-        <input id="city" type="text" name="city" value="{{ old('city', $development->city ?? '') }}" class="field-input">
-        @error('city')
+        <label for="launch_date" class="field-label">Data de lancamento</label>
+        <input
+            id="launch_date"
+            type="date"
+            name="launch_date"
+            value="{{ old('launch_date', isset($development?->launch_date) ? $development->launch_date->format('Y-m-d') : (isset($development?->start_date) ? $development->start_date->format('Y-m-d') : '')) }}"
+            class="field-input"
+        >
+        @error('launch_date')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group">
-        <label for="state" class="field-label">Estado</label>
-        <input id="state" type="text" name="state" maxlength="2" value="{{ old('state', $development->state ?? '') }}" class="field-input">
-        @error('state')
+        <label for="expected_delivery" class="field-label">Previsao de entrega</label>
+        <input
+            id="expected_delivery"
+            type="date"
+            name="expected_delivery"
+            value="{{ old('expected_delivery', isset($development?->expected_delivery) ? $development->expected_delivery->format('Y-m-d') : (isset($development?->expected_delivery_date) ? $development->expected_delivery_date->format('Y-m-d') : '')) }}"
+            class="field-input"
+        >
+        @error('expected_delivery')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field-group md:col-span-2">
-        <label for="address" class="field-label">Endereço</label>
-        <input id="address" type="text" name="address" value="{{ old('address', $development->address ?? '') }}" class="field-input">
-        @error('address')
-            <p class="field-error">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <div class="field-group">
-        <label for="start_date" class="field-label">Data de início</label>
-        <input id="start_date" type="date" name="start_date" value="{{ old('start_date', isset($development?->start_date) ? $development->start_date->format('Y-m-d') : '') }}" class="field-input">
-        @error('start_date')
-            <p class="field-error">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <div class="field-group">
-        <label for="expected_delivery_date" class="field-label">Previsão de entrega</label>
-        <input id="expected_delivery_date" type="date" name="expected_delivery_date" value="{{ old('expected_delivery_date', isset($development?->expected_delivery_date) ? $development->expected_delivery_date->format('Y-m-d') : '') }}" class="field-input">
-        @error('expected_delivery_date')
-            <p class="field-error">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <div class="field-group md:col-span-2">
-        <label for="description" class="field-label">Descrição</label>
-        <textarea id="description" name="description" rows="4" class="field-input">{{ old('description', $development->description ?? '') }}</textarea>
+        <label for="description" class="field-label">Descricao</label>
+        <textarea id="description" name="description" rows="4" class="field-input" placeholder="Apresente proposta, diferencial comercial e contexto do empreendimento.">{{ old('description', $development->description ?? '') }}</textarea>
         @error('description')
+            <p class="field-error">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="field-group md:col-span-2">
+        <label for="notes" class="field-label">Observacoes internas</label>
+        <textarea id="notes" name="notes" rows="5" class="field-input" placeholder="Registre informacoes operacionais, decisoes comerciais ou pontos de atencao.">{{ old('notes', $development->notes ?? '') }}</textarea>
+        @error('notes')
             <p class="field-error">{{ $message }}</p>
         @enderror
     </div>

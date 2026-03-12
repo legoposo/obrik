@@ -21,16 +21,9 @@ class StoreContractRequest extends FormRequest
             'development_id' => ['required', 'exists:developments,id'],
             'unit_id' => ['required', 'exists:units,id'],
             'client_id' => ['required', 'exists:clients,id'],
-            'contract_number' => ['required', 'string', 'max:255', 'unique:contracts,contract_number'],
-            'sale_date' => ['required', 'date'],
-            'contract_date' => ['required', 'date', 'after_or_equal:sale_date'],
-            'unit_price' => ['required', 'numeric', 'min:0'],
-            'discount' => ['nullable', 'numeric', 'min:0'],
-            'negotiated_value' => ['required', 'numeric', 'min:0'],
-            'down_payment' => ['nullable', 'numeric', 'min:0'],
-            'financed_amount' => ['nullable', 'numeric', 'min:0'],
-            'installments_count' => ['nullable', 'integer', 'min:0'],
-            'status' => ['required', Rule::in(['ativo', 'assinado', 'cancelado', 'concluido'])],
+            'value' => ['required', 'numeric', 'min:0'],
+            'contract_date' => ['required', 'date'],
+            'status' => ['required', Rule::in(['reserva', 'proposta', 'contrato_assinado', 'cancelado', 'concluido'])],
             'notes' => ['nullable', 'string'],
         ];
     }
@@ -38,14 +31,7 @@ class StoreContractRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'discount' => $this->normalizeDecimal($this->input('discount')),
-            'unit_price' => $this->normalizeDecimal($this->input('unit_price')),
-            'negotiated_value' => $this->normalizeDecimal($this->input('negotiated_value')),
-            'down_payment' => $this->normalizeDecimal($this->input('down_payment')),
-            'financed_amount' => $this->normalizeDecimal($this->input('financed_amount')),
-            'installments_count' => $this->input('installments_count') !== null && $this->input('installments_count') !== ''
-                ? (int) $this->input('installments_count')
-                : 0,
+            'value' => $this->normalizeDecimal($this->input('value')),
         ]);
     }
 
@@ -54,7 +40,6 @@ class StoreContractRequest extends FormRequest
         $validator->after(function (Validator $validator) {
             $this->validateUnitBelongsToDevelopment($validator);
             $this->validateUnitAvailability($validator);
-            $this->validateAmounts($validator);
         });
     }
 
@@ -82,32 +67,11 @@ class StoreContractRequest extends FormRequest
 
         $hasOpenContract = Contract::query()
             ->where('unit_id', $this->integer('unit_id'))
-            ->whereIn('status', ['ativo', 'assinado', 'concluido'])
+            ->whereIn('status', ['reserva', 'proposta', 'contrato_assinado', 'concluido'])
             ->exists();
 
         if ($hasOpenContract) {
-            $validator->errors()->add('unit_id', 'A unidade selecionada ja possui um contrato vigente.');
-        }
-    }
-
-    protected function validateAmounts(Validator $validator): void
-    {
-        $unitPrice = (float) ($this->input('unit_price') ?? 0);
-        $discount = (float) ($this->input('discount') ?? 0);
-        $negotiatedValue = (float) ($this->input('negotiated_value') ?? 0);
-        $downPayment = (float) ($this->input('down_payment') ?? 0);
-        $financedAmount = (float) ($this->input('financed_amount') ?? 0);
-
-        if ($negotiatedValue > $unitPrice) {
-            $validator->errors()->add('negotiated_value', 'O valor negociado nao pode ser maior que o valor da unidade.');
-        }
-
-        if ($discount > $unitPrice) {
-            $validator->errors()->add('discount', 'O desconto nao pode ser maior que o valor da unidade.');
-        }
-
-        if (($downPayment + $financedAmount) > $negotiatedValue) {
-            $validator->errors()->add('financed_amount', 'Entrada e financiamento nao podem ultrapassar o valor negociado.');
+            $validator->errors()->add('unit_id', 'A unidade selecionada ja possui uma reserva ou contrato vigente.');
         }
     }
 

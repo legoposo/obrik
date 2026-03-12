@@ -3,42 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Builder;
+use App\Models\Client;
 use App\Models\Development;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DevelopmentController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = trim((string) $request->string('search'));
-        $matchedTypes = $this->matchedDevelopmentTypes($search);
-        $matchedStatuses = $this->matchedDevelopmentStatuses($search);
 
-        $developments = Development::with('builder')
-            ->when($search !== '', function ($query) use ($search, $matchedTypes, $matchedStatuses) {
-                $query->where(function ($innerQuery) use ($search, $matchedTypes, $matchedStatuses) {
-                    $like = '%'.$search.'%';
+        $developments = Development::query()
+            ->withCount([
+                'units',
+                'units as available_units_count' => fn ($query) => $query->where('status', 'disponivel'),
+                'contracts as active_contracts_count' => fn ($query) => $query->whereIn('status', ['reserva', 'proposta', 'contrato_assinado']),
+            ])
+            ->when($search !== '', function ($query) use ($search) {
+                $like = '%'.$search.'%';
 
+                $query->where(function ($innerQuery) use ($like) {
                     $innerQuery
                         ->where('name', 'like', $like)
-                        ->orWhere('city', 'like', $like)
-                        ->orWhere('state', 'like', $like)
-                        ->orWhere('address', 'like', $like)
+                        ->orWhere('location', 'like', $like)
                         ->orWhere('description', 'like', $like)
-                        ->orWhereHas('builder', function ($builderQuery) use ($like) {
-                            $builderQuery
-                                ->where('name', 'like', $like)
-                                ->orWhere('city', 'like', $like)
-                                ->orWhere('responsible', 'like', $like);
-                        });
-
-                    if ($matchedTypes !== []) {
-                        $innerQuery->orWhereIn('type', $matchedTypes);
-                    }
-
-                    if ($matchedStatuses !== []) {
-                        $innerQuery->orWhereIn('status', $matchedStatuses);
-                    }
+                        ->orWhere('notes', 'like', $like)
+                        ->orWhere('status', 'like', $like);
                 });
             })
             ->latest()
@@ -48,83 +39,110 @@ class DevelopmentController extends Controller
         return view('developments.index', compact('developments', 'search'));
     }
 
-    public function create()
+    public function create(): View
     {
-        return view('developments.create');
+        $development = new Development([
+            'status' => 'planejamento',
+        ]);
+
+        return view('developments.create', compact('development'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:houses,apartments'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'size:2'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'start_date' => ['nullable', 'date'],
-            'expected_delivery_date' => ['nullable', 'date'],
-            'status' => ['required', 'in:planning,in_progress,paused,completed,canceled'],
-            'description' => ['nullable', 'string'],
-        ]);
-
+        $validated = $this->validateDevelopment($request);
         $builder = Builder::query()->first();
 
         if (! $builder) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(['name' => 'Cadastre uma construtora antes de criar um empreendimento.']);
+                ->withErrors(['name' => 'Cadastre uma incorporadora/construtora antes de criar um empreendimento.']);
         }
 
-        Development::create([
-            ...$validated,
-            'builder_id' => $builder->id,
-        ]);
+        Development::create($this->developmentPayload($validated, null, $builder->id));
 
         return redirect()
             ->route('developments.index')
             ->with('success', 'Empreendimento cadastrado com sucesso.');
     }
 
-    public function show(Development $development)
+    public function show(Development $development): View
     {
-        $development->load([
-            'builder',
-            'units' => fn ($query) => $query->orderByRaw('LENGTH(identifier)')->orderBy('identifier'),
+        $development->loadCount([
+            'units',
+            'units as available_units_count' => fn ($query) => $query->where('status', 'disponivel'),
+            'units as reserved_units_count' => fn ($query) => $query->where('status', 'reservada'),
+            'units as sold_units_count' => fn ($query) => $query->where('status', 'vendida'),
+            'contracts as active_contracts_count' => fn ($query) => $query->whereIn('status', ['reserva', 'proposta', 'contrato_assinado']),
+            'communications',
+            'photos',
+            'stages',
         ]);
 
-        $units = $development->units;
+        $units = $development->units()
+            ->orderBy('block_or_tower')
+            ->orderBy('unit_number')
+            ->take(6)
+            ->get();
 
-        $unitStats = [
-            'available' => $units->where('status', 'available')->count(),
-            'reserved' => $units->where('status', 'reserved')->count(),
-            'sold' => $units->where('status', 'sold')->count(),
-            'blocked' => $units->where('status', 'blocked')->count(),
-        ];
+        $contracts = $development->contracts()
+            ->with(['client', 'unit'])
+            ->latest('contract_date')
+            ->take(5)
+            ->get();
 
-        return view('developments.show', compact('development', 'units', 'unitStats'));
+        $linkedClients = Client::query()
+            ->select('clients.*')
+            ->whereHas('contracts', fn ($query) => $query->where('development_id', $development->id))
+            ->orderBy('name')
+            ->distinct()
+            ->take(6)
+            ->get();
+
+        $stages = $development->stages()
+            ->orderByRaw("CASE status WHEN 'em_andamento' THEN 0 WHEN 'pendente' THEN 1 WHEN 'concluido' THEN 2 ELSE 3 END")
+            ->orderBy('expected_date')
+            ->get();
+
+        $communications = $development->communications()
+            ->latest('created_at')
+            ->take(4)
+            ->get();
+
+        $photos = $development->photos()
+            ->latest('date')
+            ->latest('id')
+            ->take(6)
+            ->get();
+
+        $concludedStages = $stages->where('status', 'concluido')->count();
+        $stageProgress = $stages->count() > 0
+            ? (int) round(($concludedStages / $stages->count()) * 100)
+            : 0;
+
+        return view('developments.show', compact(
+            'development',
+            'units',
+            'contracts',
+            'linkedClients',
+            'stages',
+            'communications',
+            'photos',
+            'stageProgress'
+        ));
     }
 
-    public function edit(Development $development)
+    public function edit(Development $development): View
     {
         return view('developments.edit', compact('development'));
     }
 
     public function update(Request $request, Development $development)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:houses,apartments'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'size:2'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'start_date' => ['nullable', 'date'],
-            'expected_delivery_date' => ['nullable', 'date'],
-            'status' => ['required', 'in:planning,in_progress,paused,completed,canceled'],
-            'description' => ['nullable', 'string'],
-        ]);
+        $validated = $this->validateDevelopment($request);
 
-        $development->update($validated);
+        $development->update($this->developmentPayload($validated, $development, $development->builder_id));
 
         return redirect()
             ->route('developments.index')
@@ -137,46 +155,31 @@ class DevelopmentController extends Controller
 
         return redirect()
             ->route('developments.index')
-            ->with('success', 'Empreendimento excluido com sucesso.');
+            ->with('success', 'Empreendimento removido com sucesso.');
     }
 
-    protected function matchedDevelopmentTypes(string $search): array
+    protected function validateDevelopment(Request $request): array
     {
-        $normalized = mb_strtolower($search);
-        $matchedTypes = [];
-
-        if (str_contains($normalized, 'casa')) {
-            $matchedTypes[] = 'houses';
-        }
-
-        if (str_contains($normalized, 'apart')) {
-            $matchedTypes[] = 'apartments';
-        }
-
-        return array_values(array_unique($matchedTypes));
+        return $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:planejamento,lancamento,em_obras,finalizado,entregue,cancelado'],
+            'launch_date' => ['nullable', 'date'],
+            'expected_delivery' => ['nullable', 'date', 'after_or_equal:launch_date'],
+            'notes' => ['nullable', 'string'],
+        ]);
     }
 
-    protected function matchedDevelopmentStatuses(string $search): array
+    protected function developmentPayload(array $validated, ?Development $development, int $builderId): array
     {
-        $normalized = mb_strtolower($search);
-        $statusMap = [
-            'planejamento' => 'planning',
-            'andamento' => 'in_progress',
-            'em andamento' => 'in_progress',
-            'pausado' => 'paused',
-            'concluido' => 'completed',
-            'concluído' => 'completed',
-            'cancelado' => 'canceled',
+        return [
+            ...$validated,
+            'builder_id' => $builderId,
+            'type' => $development?->type ?? 'apartments',
+            'address' => $validated['location'] ?? null,
+            'start_date' => $validated['launch_date'] ?? null,
+            'expected_delivery_date' => $validated['expected_delivery'] ?? null,
         ];
-
-        $matches = [];
-
-        foreach ($statusMap as $term => $status) {
-            if (str_contains($normalized, $term)) {
-                $matches[] = $status;
-            }
-        }
-
-        return array_values(array_unique($matches));
     }
 }

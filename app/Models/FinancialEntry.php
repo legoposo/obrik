@@ -11,6 +11,7 @@ class FinancialEntry extends Model
         'work_id',
         'client_id',
         'type',
+        'category',
         'description',
         'amount',
         'due_date',

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Builder extends Model
 {
@@ -16,8 +17,14 @@ class Builder extends Model
         'address',
         'responsible',
     ];
-    public function developments()
+
+    public function developments(): HasMany
     {
         return $this->hasMany(Development::class);
-    } 
+    }
+
+    public function clients(): HasMany
+    {
+        return $this->hasMany(Client::class, 'construtora_id');
+    }
 }

@@ -3,7 +3,12 @@
         <div class="page-header">
             <div>
                 <h1 class="page-title">Editar Obra</h1>
-                <p class="page-subtitle">Atualize os dados da obra cadastrada.</p>
+                <p class="page-subtitle">Atualize os dados da obra cadastrada e acesse o cronograma sempre que precisar revisar as etapas.</p>
+            </div>
+
+            <div class="flex flex-col gap-3 sm:flex-row">
+                <a href="{{ route('works.index') }}" class="ghost-button">Voltar para obras</a>
+                <a href="{{ route('works.stages.index', $work) }}" class="primary-button">Abrir Cronograma</a>
             </div>
         </div>
 

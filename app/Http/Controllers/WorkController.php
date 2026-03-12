@@ -10,7 +10,13 @@ class WorkController extends Controller
 {
     public function index()
     {
-        $works = Work::with('client')->latest()->paginate(10);
+        $works = Work::with('client')
+            ->withCount('stages')
+            ->withCount([
+                'stages as completed_stages_count' => fn ($query) => $query->where('status', 'completed'),
+            ])
+            ->latest()
+            ->paginate(10);
 
         return view('works.index', compact('works'));
     }

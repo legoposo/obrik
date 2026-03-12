@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Work extends Model
 {
@@ -20,8 +22,19 @@ class Work extends Model
         'notes',
     ];
 
-    public function client()
+    protected $casts = [
+        'start_date' => 'date',
+        'expected_end_date' => 'date',
+        'budget' => 'decimal:2',
+    ];
+
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function stages(): HasMany
+    {
+        return $this->hasMany(WorkStage::class);
     }
 }

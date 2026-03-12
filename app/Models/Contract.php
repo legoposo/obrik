@@ -17,6 +17,7 @@ class Contract extends Model
         'contract_number',
         'sale_date',
         'contract_date',
+        'value',
         'unit_price',
         'discount',
         'negotiated_value',
@@ -30,6 +31,7 @@ class Contract extends Model
     protected $casts = [
         'sale_date' => 'date',
         'contract_date' => 'date',
+        'value' => 'decimal:2',
         'unit_price' => 'decimal:2',
         'discount' => 'decimal:2',
         'negotiated_value' => 'decimal:2',
@@ -55,6 +57,6 @@ class Contract extends Model
 
     public function shouldSyncUnitStatus(): bool
     {
-        return in_array($this->status, ['ativo', 'assinado', 'concluido'], true);
+        return in_array($this->status, ['reserva', 'proposta', 'contrato_assinado', 'concluido'], true);
     }
 }

@@ -1,18 +1,18 @@
-<x-layouts::app :title="__('Editar Contrato')">
+<x-layouts::app :title="__('Editar Reserva / Contrato')">
     <div class="p-6">
         <div class="page-header">
             <div>
-                <h1 class="page-title">Editar Contrato</h1>
-                <p class="page-subtitle">Atualize os dados do contrato preservando o padrão visual e estrutural dos formulários já existentes.</p>
+                <h1 class="page-title">Editar Reserva / Contrato</h1>
+                <p class="page-subtitle">Atualize o relacionamento comercial preservando o historico do cliente, da unidade e do empreendimento.</p>
             </div>
         </div>
 
         <div class="panel-card">
             <div class="panel-card__body">
                 <div class="panel-card__intro">
-                    <p class="panel-card__eyebrow">Cadastro padronizado</p>
-                    <h2 class="panel-card__title">Atualizar contrato</h2>
-                    <p class="panel-card__text">Revise vínculo entre empreendimento, unidade e cliente, além das informações financeiras e contratuais.</p>
+                    <p class="panel-card__eyebrow">Ajuste da operacao</p>
+                    <h2 class="panel-card__title">Atualizar dados comerciais</h2>
+                    <p class="panel-card__text">Revise valor, status e observacoes da reserva ou contrato conforme a negociacao evolui.</p>
                 </div>
 
                 <form action="{{ route('contracts.update', $contract) }}" method="POST">
@@ -22,8 +22,8 @@
                     @include('contracts._form')
 
                     <div class="form-actions">
-                        <a href="{{ route('contracts.index') }}" class="ghost-button" wire:navigate>Cancelar</a>
-                        <button type="submit" class="primary-button">Atualizar Contrato</button>
+                        <a href="{{ route('contracts.index', ['development_id' => $contract->development_id]) }}" class="ghost-button">Cancelar</a>
+                        <button type="submit" class="primary-button">Atualizar operacao</button>
                     </div>
                 </form>
             </div>

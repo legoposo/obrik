@@ -3,7 +3,7 @@
         <label for="client_id" class="field-label">Cliente</label>
         <select id="client_id" name="client_id" class="field-input">
             <option value="">Selecione um cliente</option>
-            @foreach($clients as $client)
+            @foreach ($clients as $client)
                 <option value="{{ $client->id }}" @selected(old('client_id', $work->client_id ?? '') == $client->id)>
                     {{ $client->name }}
                 </option>
@@ -39,12 +39,12 @@
 
     <div class="field-group">
         <label for="start_date" class="field-label">Data de inicio</label>
-        <input id="start_date" type="date" name="start_date" value="{{ old('start_date', $work->start_date ?? '') }}" class="field-input">
+        <input id="start_date" type="date" name="start_date" value="{{ old('start_date', $work->start_date?->format('Y-m-d') ?? '') }}" class="field-input">
     </div>
 
     <div class="field-group">
         <label for="expected_end_date" class="field-label">Previsao de termino</label>
-        <input id="expected_end_date" type="date" name="expected_end_date" value="{{ old('expected_end_date', $work->expected_end_date ?? '') }}" class="field-input">
+        <input id="expected_end_date" type="date" name="expected_end_date" value="{{ old('expected_end_date', $work->expected_end_date?->format('Y-m-d') ?? '') }}" class="field-input">
     </div>
 
     <div class="field-group">

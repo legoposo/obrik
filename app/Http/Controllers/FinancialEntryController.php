@@ -32,6 +32,7 @@ class FinancialEntryController extends Controller
             'work_id' => ['required', 'exists:works,id'],
             'client_id' => ['nullable', 'exists:clients,id'],
             'type' => ['required', 'in:income,expense'],
+            'category' => ['nullable', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0'],
             'due_date' => ['nullable', 'date'],
@@ -44,7 +45,7 @@ class FinancialEntryController extends Controller
 
         return redirect()
             ->route('financial.index')
-            ->with('success', 'Lançamento financeiro cadastrado com sucesso.');
+            ->with('success', 'Lancamento financeiro cadastrado com sucesso.');
     }
 
     public function edit(FinancialEntry $financial)
@@ -61,6 +62,7 @@ class FinancialEntryController extends Controller
             'work_id' => ['required', 'exists:works,id'],
             'client_id' => ['nullable', 'exists:clients,id'],
             'type' => ['required', 'in:income,expense'],
+            'category' => ['nullable', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0'],
             'due_date' => ['nullable', 'date'],
@@ -73,7 +75,7 @@ class FinancialEntryController extends Controller
 
         return redirect()
             ->route('financial.index')
-            ->with('success', 'Lançamento financeiro atualizado com sucesso.');
+            ->with('success', 'Lancamento financeiro atualizado com sucesso.');
     }
 
     public function destroy(FinancialEntry $financial)
@@ -82,6 +84,6 @@ class FinancialEntryController extends Controller
 
         return redirect()
             ->route('financial.index')
-            ->with('success', 'Lançamento financeiro removido com sucesso.');
+            ->with('success', 'Lancamento financeiro removido com sucesso.');
     }
 }
